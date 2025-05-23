@@ -16,9 +16,12 @@ uvicorn = "*"
 sqlalchemy = "*"
 asyncpg = "*"
 python-dotenv = "*"
-pydantic-settings = "*"
 passlib = "*"
 python-jose = {extras = ["cryptography"], version = "*"}
+pydantic = "*"
+pydantic-settings = "*"
+alembic = "*"
+psycopg2-binary = "*"
 
 [dev-packages]
 

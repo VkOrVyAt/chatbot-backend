@@ -1,12 +1,14 @@
-from pydantic import BaseSettings
+from pydantic_settings import BaseSettings
+from pydantic import AnyUrl
+
 
 class Settings(BaseSettings):
-    DATABASE_URL: str
+    DATABASE_URL: AnyUrl   # подхватит DATABASE_URL из .env
     SECRET_KEY: str
-    ALGORITHM: str
-    ACCESS_TOKEN_EXPIRE_MINUTES: int
 
     class Config:
         env_file = ".env"
+        env_file_encoding = "utf-8"
+
 
 settings = Settings()
