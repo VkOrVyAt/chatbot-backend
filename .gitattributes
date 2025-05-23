@@ -1,0 +1,18 @@
+# Устанавливаем автоопределение текстовых файлов
+* text=auto
+
+# Все .txt файлы используют LF
+*.txt text eol=lf
+
+# Pipfile и его lock-файл явно используем LF
+Pipfile text eol=lf
+Pipfile.lock text eol=lf
+
+# Файлы в директории модели (например, merges.txt)
+tests/model/**/*.txt text eol=lf
+
+# Бинарные файлы (отключаем конвертацию)
+*.lock binary
+*.png binary
+*.jpg binary
+*.gz binary
