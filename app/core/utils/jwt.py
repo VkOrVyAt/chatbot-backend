@@ -1,12 +1,14 @@
 from datetime import datetime, timedelta, timezone
 from jose import jwt, JWTError
+import logging
 
 from app.core.config import settings
 from app.schemas.auth import TokenData
 
+logger = logging.getLogger(__name__)
 def create_access_token(data: TokenData, expires_delta: timedelta | None = None) -> str:
     # Преобразуем Pydantic-модель в словарь, исключая неустановленные поля
-    to_encode = data.dict(exclude_unset=True)
+    to_encode = data.model_dump(exclude_unset=True)
     # Устанавливаем время истечения токена
     if expires_delta:
         expire = datetime.now(timezone.utc) + expires_delta
@@ -22,5 +24,6 @@ def verify_access_token(token: str) -> dict:
     try:
         payload = jwt.decode(token, settings.SECRET_KEY, algorithms=[settings.JWT_ALGORITHM])
         return payload
-    except JWTError:
+    except JWTError as e:
+        logger.warning(f"Failed to verify JWT token: {str(e)}")
         return None

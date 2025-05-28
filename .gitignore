@@ -29,6 +29,7 @@ MANIFEST
 *.log
 *.sqlite
 *.db
+logs/
 
 # IDE
 .vscode/
