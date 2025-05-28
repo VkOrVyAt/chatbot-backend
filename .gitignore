@@ -30,6 +30,7 @@ MANIFEST
 *.sqlite
 *.db
 logs/
+alembic/versions/*
 
 # IDE
 .vscode/

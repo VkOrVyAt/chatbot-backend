@@ -19,17 +19,10 @@ class User(Base):
         "ChatHistory",
         back_populates="user",
         cascade="all, delete-orphan",
-        lazy="dynamic"  # Для больших объемов данных
-    )
-    
-    cache_entries = relationship(
-        "BotCache",
-        back_populates="user",
-        cascade="all, delete-orphan",
         lazy="dynamic"
     )
 
-    # Индексы для производительности
+    # Индексы
     __table_args__ = (
         Index('idx_user_active_created', 'is_active', 'created_at'),
         Index('idx_user_email_active', 'email', 'is_active'),

@@ -28,17 +28,14 @@ ai:
 	pipenv run python tests/test_model.py
 
 migrate:
-	@if [ -z "$(msg)" ]; then echo "Please provide a message: make migrate msg='your message'"; exit 1; fi
-	alembic revision --autogenerate -m "$(msg)"
+	@if "$(msg)"=="" (echo "Please provide a message: make migrate msg='your message'" && exit 1)
+	pipenv run alembic revision --autogenerate -m "$(msg)"
 
-# Применить все миграции
 upgrade:
-	alembic upgrade head
+	pipenv run alembic upgrade head
 
-# Откатить последнюю миграцию (на одну версию назад)
 downgrade:
-	alembic downgrade -1
+	pipenv run alembic downgrade -1
 
-# Показать текущую версию миграции
 show:
-	alembic current
+	pipenv run alembic current
