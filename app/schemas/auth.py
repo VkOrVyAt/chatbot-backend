@@ -3,6 +3,7 @@ from typing import Optional
 
 class UserLogin(BaseModel):
     username: str
+    email: Optional[str] = None
     password: str
 
 class Token(BaseModel):
@@ -11,4 +12,4 @@ class Token(BaseModel):
     expires_in: int
 
 class TokenData(BaseModel):
-    username: Optional[str] = None
+    sub: Optional[str] = None
