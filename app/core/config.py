@@ -5,6 +5,8 @@ from pydantic import AnyUrl
 class Settings(BaseSettings):
     DATABASE_URL: AnyUrl   # подхватит DATABASE_URL из .env
     SECRET_KEY: str
+    JWT_EXPIRATION_TIME: int
+    JWT_ALGORITHM: str
 
     class Config:
         env_file = ".env"
