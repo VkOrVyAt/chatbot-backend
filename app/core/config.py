@@ -30,9 +30,10 @@ class Settings(BaseSettings):
     SECRET_KEY: str
     JWT_EXPIRATION_TIME: int
     JWT_ALGORITHM: str
+    REDIS_URL: AnyUrl
 
     model_config = {
-        "env_file": ".env",
+        "env_file": "app/.env",
         "env_file_encoding": "utf-8",
         "case_sensitive": True,
     }

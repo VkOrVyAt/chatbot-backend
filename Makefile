@@ -1,41 +1,44 @@
-SHELL := /bin/bash
+SHELL := powershell.exe
 
 run:
-	pipenv run uvicorn app.main:app --reload --host 127.0.0.1 --port 8000
+	$$env:PIPENV_PIPFILE = "app/Pipfile"; $$env:PYTHONPATH = "."; pipenv run uvicorn app.main:app --reload --host 127.0.0.1 --port 8000
 
 shell:
-	pipenv shell
+	cd app; pipenv shell
 
 install:
-	pipenv install
+	cd app; pipenv install
+
+sync:
+	cd app; pipenv sync
 
 freeze:
-	pipenv lock --requirements > requirements.txt
+	cd app; pipenv lock --requirements > requirements.txt
 
 test:
-	pipenv run pytest
+	cd app; pipenv run pytest
 
 format:
-	pipenv run black .
+	cd app; pipenv run black .
 
 lint:
-	pipenv run pylint app
+	cd app; pipenv run pylint app
 
 env:
-	pipenv run python -m dotenv.cli get
+	cd app; pipenv run python -m dotenv.cli get
 
 ai:
-	pipenv run python tests/test_model.py
+	cd app; pipenv run python tests/test_model.py
 
 migrate:
-	@if "$(msg)"=="" (echo "Please provide a message: make migrate msg='your message'" && exit 1)
-	pipenv run alembic revision --autogenerate -m "$(msg)"
+	@if ("$(msg)" -eq "") { Write-Host "Please provide a message: make migrate msg='your message'"; exit 1 }
+	cd app; pipenv run alembic --config ../alembic.ini revision --autogenerate -m "$(msg)"
 
 upgrade:
-	pipenv run alembic upgrade head
+	cd app; pipenv run alembic --config ../alembic.ini upgrade head
 
 downgrade:
-	pipenv run alembic downgrade -1
+	cd app; pipenv run alembic --config ../alembic.ini downgrade -1
 
 show:
-	pipenv run alembic current
+	cd app; pipenv run alembic --config ../alembic.ini current
