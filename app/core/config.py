@@ -30,7 +30,8 @@ class Settings(BaseSettings):
     SECRET_KEY: str
     JWT_EXPIRATION_TIME: int
     JWT_ALGORITHM: str
-    REDIS_URL: AnyUrl
+    REDIS_URL: str
+    ENABLE_RATE_LIMITING: bool
 
     model_config = {
         "env_file": "app/.env",

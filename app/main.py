@@ -1,7 +1,10 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from contextlib import asynccontextmanager
 import logging
 
+from app.core.utils.rate_limiter import limiter
+from slowapi import _rate_limit_exceeded_handler
+from slowapi.errors import RateLimitExceeded
 from app.routers.auth import router as auth_router
 from app.core.config import setup_logging
 
@@ -33,11 +36,16 @@ app = FastAPI(
 # Настройка логирования (логи в logs/app.log в корне проекта)
 setup_logging()
 
+# Инициализация лимитера запросов
+app.state.limiter = limiter
+app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
+
 # Подключение роутеров
 app.include_router(auth_router)
 
 @app.get("/")
-async def root():
+@limiter.limit("10/minute")
+async def root(request: Request):
     """
     Корневой эндпоинт для проверки работоспособности API.
     """

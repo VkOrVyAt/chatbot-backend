@@ -19,6 +19,8 @@ fastapi-limiter = "*"
 celery = "*"
 redis = "*"
 pydantic = {extras = ["email"], version = "*"}
+bcrypt = "*"
+slowapi = "*"
 
 [dev-packages]
 
