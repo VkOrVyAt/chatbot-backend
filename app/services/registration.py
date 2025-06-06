@@ -11,7 +11,6 @@ from app.core.utils.hash import get_password_hash
 logger = logging.getLogger(__name__)
 
 async def register_user(user_data: UserCreate, db: AsyncSession) -> UserRead:
-    # 1. Проверяем, что такого username/email ещё нет
     stmt = select(exists().where(
         or_(
             User.email == user_data.email,
@@ -26,10 +25,8 @@ async def register_user(user_data: UserCreate, db: AsyncSession) -> UserRead:
             detail="User with this email or username already exists."
         )
 
-    # 2. Хешируем пароль
     hashed = get_password_hash(user_data.password)
 
-    # 3. Создаём объект и сохраняем
     new_user = User(
         email=user_data.email,
         username=user_data.username,
@@ -41,7 +38,6 @@ async def register_user(user_data: UserCreate, db: AsyncSession) -> UserRead:
         await db.refresh(new_user)
         logger.info(f"User registered: {new_user.username}")
     except IntegrityError:
-        # Вдруг кто-то успел вставить того же пользователя параллельно
         await db.rollback()
         logger.error(f"Database integrity error during registration for {user_data.username}")
         raise HTTPException(
@@ -49,6 +45,4 @@ async def register_user(user_data: UserCreate, db: AsyncSession) -> UserRead:
             detail="Could not create user due to a database integrity error."
         )
 
-    # 4. Возвращаем DTO
-    # Pydantic v2: model_validate с конфигом from_attributes=True
     return UserRead.model_validate(new_user)

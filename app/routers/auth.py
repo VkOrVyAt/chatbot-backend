@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException, status, Request
 from sqlalchemy.ext.asyncio import AsyncSession
 import logging
 from app.db.session import get_db
-from app.schemas.user import UserCreate, UserRead
+from app.schemas.user import UserCreate, UserRead, UserUpdate
 from app.schemas.auth import UserLogin, Token
 from app.services.registration import register_user
 from app.services.auth import authenticate_user
@@ -16,22 +16,24 @@ router = APIRouter(prefix="/auth", tags=["auth"])
 @limiter.limit("5/minute")
 async def register(user: UserCreate, db: AsyncSession = Depends(get_db), request: Request = None):
     """
-    Эндпоинт для регистрации нового пользователя.
+    Registers a new user in the system.
 
-    - Принимает данные пользователя (username, email, password) в формате UserCreate.
-    - Проверяет уникальность username и email.
-    - Хеширует пароль и сохраняет пользователя в базе данных.
-    - Возвращает данные созданного пользователя (id, username, email, is_active, created_at).
+    - **Rate Limit**: 5 requests per minute.
+    - Creates a new user with a unique `username` and `email`.
+    - The password is hashed before being stored in the database.
 
-    Args:
-        user (UserCreate): Данные для создания пользователя.
-        db (AsyncSession): Асинхронная сессия базы данных.
+    Parameters:
+    - **user** (UserCreate): The user data to register, including `username`, `email`, and `password`.
+    - **db** (AsyncSession): The database session for creating the user.
+    - **request** (Request, optional): The incoming HTTP request object (used for rate limiting).
 
     Returns:
-        UserRead: Данные созданного пользователя.
+    - **UserRead**: The created user's details, including `id`, `username`, `email`, `is_active`, and `created_at`.
 
     Raises:
-        HTTPException: Если username или email уже заняты (400) или произошла ошибка сервера (500).
+    - **HTTPException** (400): If the `username` or `email` is already taken.
+    - **HTTPException** (429): If the rate limit is exceeded.
+    - **HTTPException** (500): If an unexpected server error occurs during registration.
     """
     try:
         new_user = await register_user(user, db)
@@ -51,21 +53,25 @@ async def register(user: UserCreate, db: AsyncSession = Depends(get_db), request
 @limiter.limit("10/minute")
 async def login(user: UserLogin, db: AsyncSession = Depends(get_db), request: Request = None):
     """
-    Эндпоинт для авторизации пользователя.
+    Authenticates a user and returns a JWT token.
 
-    - Принимает username (обязательно), email (опционально) и password в формате UserLogin.
-    - Проверяет существование пользователя и правильность пароля.
-    - Генерирует и возвращает JWT-токен с id пользователя в поле sub.
+    - **Rate Limit**: 10 requests per minute.
+    - Validates the user's credentials and generates a JWT token.
+    - Either `username` or `email` must be provided along with the `password`.
 
-    Args:
-        user (UserLogin): Данные для входа.
-        db (AsyncSession): Асинхронная сессия базы данных.
+    Parameters:
+    - **user** (UserLogin): The user credentials, including `username` (required), `email` (optional), and `password`.
+    - **db** (AsyncSession): The database session for authenticating the user.
+    - **request** (Request, optional): The incoming HTTP request object (used for rate limiting).
 
     Returns:
-        Token: Объект с access_token, token_type ("bearer") и expires_in (в секундах).
+    - **Token**: The JWT token object containing `access_token`, `token_type` ("bearer"), and `expires_in` (in seconds).
 
     Raises:
-        HTTPException: Если данные неверны (401), не предоставлены username/email (400) или произошла ошибка сервера (500).
+    - **HTTPException** (400): If neither `username` nor `email` is provided.
+    - **HTTPException** (401): If the credentials are invalid.
+    - **HTTPException** (429): If the rate limit is exceeded.
+    - **HTTPException** (500): If an unexpected server error occurs during authentication.
     """
     try:
         token = await authenticate_user(user, db)

@@ -7,15 +7,12 @@ from app.schemas.auth import TokenData
 
 logger = logging.getLogger(__name__)
 def create_access_token(data: TokenData, expires_delta: timedelta | None = None) -> str:
-    # Преобразуем Pydantic-модель в словарь, исключая неустановленные поля
     to_encode = data.model_dump(exclude_unset=True)
-    # Устанавливаем время истечения токена
     if expires_delta:
         expire = datetime.now(timezone.utc) + expires_delta
     else:
         expire = datetime.now(timezone.utc) + timedelta(minutes=settings.JWT_EXPIRATION_TIME)
     
-    # Добавляем время истечения в словарь
     to_encode.update({"exp": int(expire.timestamp())})
     encoded_jwt = jwt.encode(to_encode, settings.SECRET_KEY, algorithm=settings.JWT_ALGORITHM)
     return encoded_jwt

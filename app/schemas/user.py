@@ -1,4 +1,4 @@
-from pydantic import BaseModel, EmailStr, field_validator
+from pydantic import BaseModel, EmailStr, field_validator, ConfigDict
 from datetime import datetime
 from typing import Optional
 
@@ -23,7 +23,7 @@ class UserRead(UserBase):
     is_active: bool
     created_at: datetime
     
-    model_config = {"from_attributes": True}
+    model_config = ConfigDict(from_attributes=True)
 
 class UserUpdate(BaseModel):
     username: Optional[str] = None

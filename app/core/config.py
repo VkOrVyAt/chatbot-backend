@@ -26,7 +26,7 @@ def setup_logging():
     )
 
 class Settings(BaseSettings):
-    DATABASE_URL: AnyUrl   # подхватит DATABASE_URL из .env
+    DATABASE_URL: AnyUrl
     SECRET_KEY: str
     JWT_EXPIRATION_TIME: int
     JWT_ALGORITHM: str

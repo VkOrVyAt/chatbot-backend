@@ -18,7 +18,6 @@ async def authenticate_user(user: UserLogin, db: AsyncSession) -> Token:
     2) Проверяем, что пользователь существует и пароль верный.
     3) Генерируем и возвращаем JWT (Token).
     """
-    # Формируем условия для поиска пользователя
     conditions = []
     if user.username:
         conditions.append(User.username == user.username)
@@ -33,12 +32,10 @@ async def authenticate_user(user: UserLogin, db: AsyncSession) -> Token:
             headers={"WWW-Authenticate": "Bearer"},
         )
     
-    # Выполняем запрос к базе
     stmt = select(User).where(or_(*conditions))
     result = await db.execute(stmt)
     user_db = result.scalar_one_or_none()
 
-    # Проверяем, что пользователь найден и пароль верный
     if not user_db or not verify_password(user.password, user_db.hashed_password):
         logger.warning(f"Failed login attempt for username: {user.username or 'unknown'}")
         raise HTTPException(
@@ -47,10 +44,8 @@ async def authenticate_user(user: UserLogin, db: AsyncSession) -> Token:
             headers={"WWW-Authenticate": "Bearer"},
         )
     
-    # Создаём объект TokenData с id пользователя
     token_data = TokenData(sub=str(user_db.id))
     
-    # Генерируем JWT-токен
     access_token = create_access_token(
         data=token_data,
         expires_delta=timedelta(minutes=settings.JWT_EXPIRATION_TIME)
@@ -60,5 +55,5 @@ async def authenticate_user(user: UserLogin, db: AsyncSession) -> Token:
     return Token(
         access_token=access_token,
         token_type="bearer",
-        expires_in=settings.JWT_EXPIRATION_TIME * 60  # Convert minutes to seconds
+        expires_in=settings.JWT_EXPIRATION_TIME * 60
     )

@@ -14,7 +14,6 @@ class User(Base):
     created_at = Column(DateTime, server_default=func.now(), nullable=False)
     updated_at = Column(DateTime, server_default=func.now(), onupdate=func.now(), nullable=False)
 
-    # Relationships
     chats = relationship(
         "ChatHistory",
         back_populates="user",
@@ -22,7 +21,6 @@ class User(Base):
         lazy="dynamic"
     )
 
-    # Индексы
     __table_args__ = (
         Index('idx_user_active_created', 'is_active', 'created_at'),
         Index('idx_user_email_active', 'email', 'is_active'),

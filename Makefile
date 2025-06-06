@@ -1,5 +1,8 @@
 SHELL := powershell.exe
 
+REDIS_CONF_PATH := D:/UrFU-chatbot/redis.conf
+REDIS_CONTAINER_NAME := redis-chatbot
+
 run:
 	$$env:PIPENV_PIPFILE = "app/Pipfile"; $$env:PYTHONPATH = "."; pipenv run uvicorn app.main:app --reload --host 127.0.0.1 --port 8000
 
@@ -44,20 +47,39 @@ show:
 	cd app; pipenv run alembic --config ../alembic.ini current
 
 redis-install:
-	docker run -d -p 6379:6379 --name redis redis
+	docker run -d -p 6379:6379 --name $(REDIS_CONTAINER_NAME) -v "$(REDIS_CONF_PATH):/usr/local/etc/redis/redis.conf" redis:latest redis-server /usr/local/etc/redis/redis.conf
 
+# Проверка подключения к Redis
 redis-ping:
-	rdcli ping
+	docker exec $(REDIS_CONTAINER_NAME) redis-cli ping
 
+# Запуск существующего контейнера
 redis-start:
-	docker start redis
+	docker start $(REDIS_CONTAINER_NAME)
 
+# Остановка контейнера
 redis-stop:
-	docker stop redis
+	docker stop $(REDIS_CONTAINER_NAME)
 
+# Удаление контейнера
 redis-remove:
-	docker rm redis
+	docker rm $(REDIS_CONTAINER_NAME)
+
+# Полная переустановка Redis
+redis-reinstall: redis-stop redis-remove redis-install
+
+# Просмотр логов Redis
+redis-logs:
+	docker logs $(REDIS_CONTAINER_NAME)
+
+# Подключение к Redis CLI
+redis-cli:
+	docker exec -it $(REDIS_CONTAINER_NAME) redis-cli
+
+# Остановка и удаление (для очистки)
+redis-clean: redis-stop redis-remove
 
 task-kill:
 	taskkill /PID 13332 /F;
 	taskkill /PID 14360 /F
+
