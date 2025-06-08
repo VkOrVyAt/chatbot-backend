@@ -38,7 +38,6 @@ def setup_logging(log_level: str = "INFO"):
     )
     logging.getLogger("bot_service").info("Logging initialized successfully")
 
-# Класс настроек
 class Settings(BaseSettings):
     DATABASE_URL: str
     ENVIRONMENT: Environment = Environment.DEVELOPMENT

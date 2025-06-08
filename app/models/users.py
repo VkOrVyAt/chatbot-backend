@@ -10,18 +10,11 @@ class User(Base):
     email = Column(String(320), unique=True, nullable=False)
     hashed_password = Column(String(128), nullable=False)
     is_active = Column(Boolean, default=True, nullable=False)
-    is_superuser = Column(Boolean, default=False, nullable=False)
     created_at = Column(DateTime, server_default=func.now(), nullable=False)
-    updated_at = Column(DateTime, server_default=func.now(), onupdate=func.now(), nullable=False)
 
-    chats = relationship(
-        "ChatHistory",
-        back_populates="user",
-        cascade="all, delete-orphan",
-        lazy="dynamic"
-    )
+    # Один пользователь = один активный чат
+    chat = relationship("Chat", back_populates="user", uselist=False, cascade="all, delete-orphan")
 
     __table_args__ = (
-        Index('idx_user_active_created', 'is_active', 'created_at'),
-        Index('idx_user_email_active', 'email', 'is_active'),
+        Index('idx_user_email', 'email'),
     )
