@@ -11,6 +11,7 @@ torch = "*"
 sqlalchemy = "*"
 asyncpg = "*"
 python-dotenv = "*"
+pydantic-settings = "*"
 
 [dev-packages]
 
