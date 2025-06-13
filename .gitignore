@@ -43,5 +43,11 @@ alembic/versions/*
 htmlcov/
 .pytest_cache/
 
-# Модель нейросети
-tests/model/
+# Модели нейросетей
+models/
+models/fine_tuned/
+models/*.bin
+models/*.safetensors
+models/*.pt
+models/*.pth
+data/training_data.json
