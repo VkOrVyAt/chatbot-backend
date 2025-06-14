@@ -51,3 +51,4 @@ models/*.safetensors
 models/*.pt
 models/*.pth
 data/training_data.json
+checkpoints/

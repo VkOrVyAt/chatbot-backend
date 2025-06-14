@@ -6,7 +6,7 @@ import logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-app = Celery(
+app_celery = Celery(
     "chatbot",
     broker=settings.REDIS_URL,
     backend=settings.REDIS_URL,

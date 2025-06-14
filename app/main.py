@@ -7,6 +7,7 @@ from slowapi import _rate_limit_exceeded_handler
 from slowapi.errors import RateLimitExceeded
 from app.routers.auth import router as auth_router
 from app.routers.me import router as me_router
+from app.routers import chats
 from app.core.config import setup_logging
 
 # Настройка lifespan-обработчика
@@ -44,6 +45,7 @@ app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 # Подключение роутеров
 app.include_router(auth_router)
 app.include_router(me_router)
+app.include_router(chats.router)
 
 @app.get("/")
 @limiter.limit("10/minute")
