@@ -1,0 +1,28 @@
+model_name: "ai-forever/rugpt3medium_based_on_gpt2"
+max_length: 512
+
+use_lora: true
+lora_r: 16
+lora_alpha: 32
+lora_dropout: 0.1
+
+learning_rate: 0.0002
+num_epochs: 3
+batch_size: 4 
+gradient_accumulation_steps: 4
+warmup_steps: 100
+weight_decay: 0.01
+
+eval_steps: 500
+save_steps: 1000
+early_stopping_patience: 3
+
+data_dir: "data/faq"
+output_dir: "models/faq_bot"
+checkpoint_dir: "checkpoints"
+
+continuous_training: false
+scan_interval: 3600
+
+off_topic_threshold: 0.7
+off_topic_model_path: "models/off_topic_classifier.pkl"
