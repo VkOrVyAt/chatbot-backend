@@ -112,9 +112,9 @@ def main():
             with torch.no_grad():
                 outputs = model.generate(
                     **inputs,
-                    max_new_tokens=100,  # Увеличиваем для более полных ответов
+                    max_new_tokens=200,  # Увеличиваем для более полных ответов
                     do_sample=True,
-                    temperature=0.3,    # Еще больше снижаем для точности
+                    temperature=0.5,    # Еще больше снижаем для точности
                     top_p=0.9,          # Увеличиваем для разнообразия
                     top_k=50,           # Увеличиваем для лучшего выбора
                     repetition_penalty=1.2,  # Умеренный штраф

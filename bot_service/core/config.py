@@ -10,7 +10,6 @@ class Environment(str, Enum):
     TESTING = "testing"
 
 def setup_logging(log_level: str = "INFO"):
-    """Настраивает логирование с ротацией по времени в папке logs корневого проекта."""
     log_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "..", "logs")
     os.makedirs(log_dir, exist_ok=True)
     log_file = os.path.join(log_dir, "bot_service.log")
@@ -53,7 +52,6 @@ class Settings(BaseSettings):
     )
 
     def __init__(self, *args, **kwargs):
-        """Инициализация с настройкой логирования."""
         super().__init__(*args, **kwargs)
         setup_logging(self.LOG_LEVEL)
 

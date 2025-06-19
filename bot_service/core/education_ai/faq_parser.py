@@ -7,11 +7,7 @@ from dataclasses import dataclass
 from enum import Enum
 from tqdm import tqdm
 
-# Настройка логирования с таймстампами
-logging.basicConfig(
-    level=logging.INFO,
-    format='%(asctime)s - %(levelname)s - %(message)s'
-)
+
 logger = logging.getLogger(__name__)
 
 class DatasetFormat(Enum):
